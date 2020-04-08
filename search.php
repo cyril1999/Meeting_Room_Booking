@@ -7,10 +7,15 @@ if(isset($_POST['Search']))
     session_start();
     $_SESSION['Date']=$_POST['Date'];
     $price_field=$_POST['Price'];
-    $min_price=0;
+    
     $max_price=0;
     switch($price_field){
-        case '0': 
+        case '0':  $max_price=2500;break;
+        case '1':  $max_price=4000;break;
+        case '2':  $max_price=6000;break;
+        case '3':  $max_price=8000;break;
+        case '4':  $max_price=10000;break;
+        case '5':  $max_price=100000;break;
     }
     $query9="Select room_id,count(slot_id) as total from slots group by(room_id)";
     // print_r($query9);
@@ -50,9 +55,10 @@ if(isset($_POST['Search']))
     // print_r($unavailable_rooms);
     $occupied_str=join(",",$unavailable_rooms);
     $query3="Select min(s.price) as min,max(s.price) as max, R.rphone,R.room_id,R.rname,R.rarea,R.pic_location
-     from rooms R, slots s where r.room_id not in ($occupied_str) and
-     R.rcity='".$_POST['City']."' and R.rarea='".$_POST['Area']."' and R.availability='Y' and s.room_id=r.room_id group by(s.room_id)";
-    //  print_r($query3);
+     from rooms R, slots s where r.room_id not in ($occupied_str)   and
+     R.rcity='".$_POST['City']."' and R.rarea='".$_POST['Area']."' and R.availability='Y' 
+     and s.room_id=r.room_id group by(s.room_id) having   max <'".$max_price."'";
+     print_r($query3);
     $res3=$connection->query($query3);
     if(!$res3)
     {
@@ -193,6 +199,7 @@ $('#search-results').append(content);
         var content='<div class="row padding-row-search">';
         var counter=0;
         for(var x of actual_results){console.log(x);
+        // if(x.max)
             content+=`
     <div class="col-md-4" id="`+x.room_id+`" >
     <div class="card " style="height:400px" >
@@ -294,6 +301,7 @@ foreach($results as $r)
     // break;
     // }
     // <a href="search_result.php" target="_blank" class="btn btn-primary">See Profile</a>
+    
     echo '
     <div class="col-md-4" id="'.$r->room_id.'" >
     <div class="card " style="height:400px" >
@@ -316,6 +324,7 @@ foreach($results as $r)
         echo '</div><br><br>
         <div class="row padding-row-search">';
     }
+
 }
 echo '</div>';
 

@@ -128,11 +128,11 @@ foreach($city[$storecity][1] as $c)
     </select>
 
     <select id="Price" name="Price">
-<option value="0">1000-2500</option>
-<option value="1">2501-4000</option>
-<option value="2">4001-6000</option>
-<option value="3">6001-8000</option>
-<option value="4">8001-10000</option>
+<option value="0"> &lt;2500</option>
+<option value="1">&lt;4000</option>
+<option value="2">&lt;6000</option>
+<option value="3">&lt;8000</option>
+<option value="4">&lt;10000</option>
 <option value="5"> &gt;10000</option>
 </select>
 <input type="date" name="Date" required>
