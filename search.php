@@ -35,13 +35,15 @@ if(isset($_POST['Search']))
     // print_r($query9);
     $res9=$connection->query($query9);
 
-    if(!$res9)die('Failed to fetch booked slots');
+    // if(!$res9)die('Failed to fetch booked slots');
+    if($res9){
     while($temp=$res9->fetch_object())
     {
         $record[$temp->room_id][2]=$temp->used;
        
 
     }
+}
     // print_r($record);
     $unavailable_rooms=array();
     foreach($record as $t)
@@ -54,15 +56,26 @@ if(isset($_POST['Search']))
 
     // print_r($unavailable_rooms);
     $occupied_str=join(",",$unavailable_rooms);
-    $query3="Select min(s.price) as min,max(s.price) as max, R.rphone,R.room_id,R.rname,R.rarea,R.pic_location
-     from rooms R, slots s where r.room_id not in ($occupied_str)   and
+   
+    if(count($unavailable_rooms)==0)
+    {
+        $query3="Select min(s.price) as min,max(s.price) as max, R.rphone,R.room_id,R.rname,R.rarea,R.pic_location
+     from rooms R, slots s  where
      R.rcity='".$_POST['City']."' and R.rarea='".$_POST['Area']."' and R.availability='Y' 
-     and s.room_id=r.room_id group by(s.room_id) having   max <'".$max_price."'";
-     print_r($query3);
+     and s.room_id=R.room_id group by(s.room_id) having   max <'".$max_price."'";
+    //  print_r($query3);
+    }
+    else{
+        $query3="Select min(s.price) as min,max(s.price) as max, R.rphone,R.room_id,R.rname,R.rarea,R.pic_location
+        from rooms R, slots s where r.room_id not in ($occupied_str)   and
+        R.rcity='".$_POST['City']."' and R.rarea='".$_POST['Area']."' and R.availability='Y' 
+        and s.room_id=R.room_id group by(s.room_id) having   max <'".$max_price."'";
+        
+    }
     $res3=$connection->query($query3);
     if(!$res3)
     {
-        die('Error in fetching results');
+        die('Error1 in fetching results');
     }
     else{
         $results=array();
@@ -103,6 +116,88 @@ $connection->close();
 <link rel="stylesheet" type="text/css" href="style.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<style>
+.navbar1 {
+  overflow: hidden;
+  background-color: #333;
+	width:100%;
+	height:133px;
+	top:0;
+}
+
+.navbar1 a {
+  float: left;
+  font-size: 20px;
+  color: #f2f2f2;
+  text-align: center;
+/*  padding: 14px 16px;*/
+  padding-left: 60px;
+  padding-right: 60px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  text-decoration: none;
+	font-weight:bold;
+}
+
+
+
+
+.dropdown1 {
+  float: right;
+  overflow: hidden;
+}
+
+.dropdown1 .dropbtn1 {
+  font-size: 20px;  
+  border: none;
+  outline: none;
+  color: #f2f2f2;
+  padding: 14px 16px;
+  background-color: #ff0000;
+  font-family: inherit;
+	font-weight:bold;
+  margin: 0;
+}
+
+.navbar1 a:hover{	/*, .dropdown:hover .dropbtn {*/
+ 	background: #222;
+  color: #fff;
+}
+
+.navbar1 .dropdown1:hover .dropbtn1 {
+ 	background: #c10000;
+  color: #fff;
+}
+
+.dropdown-content1 {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content1 a {
+  float: none;
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+}
+
+.dropdown-content1 a:hover {
+  background-color: #ddd;
+}
+
+.dropdown1:hover .dropdown-content1 {
+  display: block;
+}
+
+
+</style>
 
 <script>
 $(document).ready(function(){
@@ -239,7 +334,8 @@ $('#search-results').append(content);
 
 
 <body >
-<section class="custom-nav">
+
+<!--<section class="custom-nav">
  
    <img class="logo" src="logo.jpg"/>
   <h1 class="heading"><b>MEETING ROOM</b></h1>
@@ -249,16 +345,54 @@ $('#search-results').append(content);
 
 <div class="grid-container">
 
-        <a class="nav_bar" href="login.html">Home</a>
+        <a class="nav_bar" href="login.php">Home</a>
  
-        <a class="nav_bar" href="login.html">Login</a>
+        <a class="nav_bar" href="login.php">Login</a>
    
         <a class="nav_bar" href="findpage.php">Locate A Room</a>
     
         <a class="nav_bar" href="sitemap.xml">Sitemap</a>
 
 
+</div>-->
+
+
+<div class="navbar1">
+				<h1 style="text-align:center;color:#fff;margin-top:1%;">Meeting Room Booking System</h1>   
+                
+
+                <?php
+                 if(isset($_SESSION['username']))
+                 {echo '<a href="dashboard.php">Dashboard</a> ';}
+                else {echo '<a href="login.php">Login</a> ';}
+                ?>
+                <!-- <a href="dashboard.php">Dashboard</a> -->
+				<a href="aboutus.xml">About Us</a>
+                <a href="findpage.php">Loacte A Room</a>
+                <?php 
+                 if(isset($_SESSION['username']))
+                 {
+                     echo '<div class="dropdown1">
+                     <button class="dropbtn1" style="width:200px;">'.explode(" ",$_SESSION["username"])[0].
+                       '<i class="fa1 fa-caret-down1"></i>
+                     </button>
+                     <div class="dropdown-content1">
+                       <a href="reset_password.php">Change Password</a>
+                       <a href="logout.php">Logout</a>
+                     </div>
+                   </div>';
+                 }
+                 else{
+                     echo '<a href="register.html" style="float:right;">Register</a>';         
+                 }
+                
+                ?>
+
 </div>
+
+
+
+
 <br>
 <div class="container-fluid" >
     <div class="row">
@@ -335,6 +469,13 @@ echo '</div>';
 </div>
 </div>
 </div>
+
+<section class="foot" style="left:0;bottom:0;position:relative; width:100%;height:50px;">
+				<a href="FAQ.php" style="margin-left:7%;">FAQs</a>
+				<a href="TnC.xml" style="margin-left:20%;">Terms & Conditions</a>
+				<a href="feedback.php"  style="margin-left:20%;">Feedback</a>
+				<a href="sitemap.xml" style="margin-left:20%;">Sitemap</a>
+			</section>
 
 </body>
 </html>

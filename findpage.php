@@ -27,12 +27,31 @@ $connection->close();
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="style.css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="style-find.css">
+<link rel="stylesheet" type="text/css" href="dashboard.css">                    <!--change here (dashboard.css include kr de.)-->
+<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">-->   <!--change here (comment kr de. )-->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script>
     $(document).ready(function(){
        
+        $.check=function(){
+            var d=$('#Date').val();
+           var curr=new Date();
+        //    alert(curr.toDateString());
+           var selected=new Date(d);
+        //    alert(selected.toDateString());
+           var diff=selected.getTime()-curr.getTime();
+           diff=diff/(1000*60*60*24);
+        //    alert(diff);
+           if(diff<-1){
+                alert('Cannot select an older date than today');
+                return false;
+            }
+        
+            
+            return true;
+        }
+
         $.getArea=function(){
 
             var citychange=$('#City').val();
@@ -66,7 +85,7 @@ $connection->close();
 </script>   
 </head>
 <body class="body">
-<section class="custom-nav">
+<!-- <section class="custom-nav">
  
    <img class="logo" src="logo.jpg"/>
   <h1 class="heading"><b>MEETING ROOM</b></h1>
@@ -76,26 +95,76 @@ $connection->close();
 
 <div class="grid-container">
 
-        <a class="nav_bar" href="login.html">Home</a>
+        <a class="nav_bar" href="login.php">Home</a>
  
-        <a class="nav_bar" href="login.html">Login</a>
+        <a class="nav_bar" href="login.php">Login</a>
    
         <a class="nav_bar" href="findpage.php">Locate A Room</a>
     
         <a class="nav_bar" href="sitemap.xml">Sitemap</a>
 
 
-</div>
-<br>
-<br>
+</div> -->
+<div>
+<div class="navbar">
+				<h1 style="text-align:center;color:#fff;">Meeting Room Booking System</h1>   <!--change here (<h1> ka style change kiya and uske bad <br> tag hata diya)-->
+                
 
+                <?php
+                 if(isset($_SESSION['username']))
+                 {echo '<a href="dashboard.php">Dashboard</a> ';}
+                else {echo '<a href="login.php">Login</a> ';}
+                ?>
+                <!-- <a href="dashboard.php">Dashboard</a> -->
+				<a href="aboutus.xml">About Us</a>
+                <a href="findpage.php">Loacte A Room</a>
+                <?php 
+                 if(isset($_SESSION['username']))
+                 {
+                     echo '<div class="dropdown">
+                     <button class="dropbtn" style="width:200px;">'.explode(" ",$_SESSION["username"])[0].
+                       '<i class="fa fa-caret-down"></i>
+                     </button>
+                     <div class="dropdown-content">
+                       <a href="reset_password.php">Change Password</a>
+                       <a href="logout.php">Logout</a>
+                     </div>
+                   </div>';
+                 }
+                 else{
+                     echo '<a href="register.html" style="float:right;">Register</a>';         //change here
+                 }
+                
+                ?>
+
+</div>
+                
+				<!-- <div class="dropdown">
+
+                
+
+
+		  		<button class="dropbtn" style="width:200px;"> 
+		    		<i class="fa fa-caret-down"></i>
+		  		</button>
+		  		<div class="dropdown-content">
+		    		<a href="reset_password.php">Change Password</a>
+		    		<a href="logout.php">Logout</a>
+		  		</div>
+				</div>  -->
+			
+
+
+<br>
+<br>
+</div>
 <div class="container">
     <div class="row">
 <!-- <div class="col-3"></div> -->
 <div class="col-12 mx-auto my-auto  ">
 
-<form method="post" action="search.php">
-    <select id="City" onchange="$.getArea()" name="City">
+<form method="post" action="search.php" onsubmit="return $.check()">
+    <select class="selectcity" id="City" onchange="$.getArea()" name="City">
 
     <?php
     $flag=true;
@@ -115,7 +184,7 @@ $connection->close();
     ?>
 </select>
 
-<select id="Area" name="Area">
+<select class="selectarea" id="Area" name="Area">
 <?php
 // print_r($storecity)
 foreach($city[$storecity][1] as $c)
@@ -127,7 +196,7 @@ foreach($city[$storecity][1] as $c)
 
     </select>
 
-    <select id="Price" name="Price">
+    <select class="selectprice" id="Price" name="Price">
 <option value="0"> &lt;2500</option>
 <option value="1">&lt;4000</option>
 <option value="2">&lt;6000</option>
@@ -135,13 +204,19 @@ foreach($city[$storecity][1] as $c)
 <option value="4">&lt;10000</option>
 <option value="5"> &gt;10000</option>
 </select>
-<input type="date" name="Date" required>
-<input type="submit" name="Search" value="Search"> 
+<input id="Date" class="date" type="date" name="Date" required style="height:50px;">
+<input class="search" type="submit" name="Search" value="Search"> 
 </form>
 </div>
 <!-- <div class="col-3"></div> -->
 </div>
 
 </div>
+<section class="foot" style="top:120vh;">
+				<a href="FAQ.php" style="margin-left:7%;">FAQs</a>
+				<a href="TnC.xml" style="margin-left:20%;">Terms & Conditions</a>
+				<a href="feedback.php"  style="margin-left:20%;">Feedback</a>
+				<a href="sitemap.xml" style="margin-left:20%;">Sitemap</a>
+			</section>
 </body>
 </html>

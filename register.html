@@ -2,6 +2,7 @@
 <html>
 <head>
     <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" type="text/css" href="dashboard.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script>
     var FlagE=true;
@@ -102,7 +103,7 @@ $.pass=function(pas){
 }
 $.Name=function(na){
     // alert('name');
-    var reg=/^([a-zA-Z]+)$/;
+    var reg=/^([a-zA-Z' ']+)$/;
     FlagName=reg.test(na.value);
     if(FlagName)
     {
@@ -199,15 +200,15 @@ return false;
 </script> -->
 </head>
 <body class="body">
-<section class="custom-nav">
+<!-- <section class="custom-nav">
  
    <img class="logo" src="logo.jpg"/>
   <h1 class="heading"><b>MEETING ROOM</b></h1>
 
     </section>
-<br><br>
+<br><br> -->
 
-<div class="grid-container">
+<!-- <div class="grid-container">
 
         <a class="nav_bar" href="login.html">Home</a>
  
@@ -218,9 +219,15 @@ return false;
         <a class="nav_bar" href="sitemap.xml">Sitemap</a>
 
 
-</div>
-<br>
-<br>
+</div> -->
+<div class="navbar">
+    <h1 style="color:#fff;text-align:center;">Meeting Room Booking System</h1>
+    <a href="dashboard.php">Home</a>
+    <a href="aboutus.xml">About Us</a>
+    <a href="findpage.php">Find</a>
+    <a href="#" style="float:right;">Register</a>
+    </div>
+
 <section class="Flex">
 
 
@@ -289,11 +296,12 @@ return false;
 
     
 </section>
-<footer class="register-footer">
-    <section class="footer-flex">
-    @Copyright TE-2 
+<section class="foot" style="top:900px;">
+    <a href="FAQ.php" style="margin-left:7%;">FAQs</a>
+    <a href="TnC.xml" style="margin-left:20%;">Terms & Conditions</a>
+    <a href="feedback.php"  style="margin-left:20%;">Feedback</a>
+    <a href="sitemap.xml" style="margin-left:20%;">Sitemap</a>
 </section>
-</footer>
 </body>
 
 </html>
